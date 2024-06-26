@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <a href="/new_campaign">Add New Campaign</a>
+    <h2>Campaigns</h2>
+    <form action="/scrape_emails" method="post">
+        <label for="domain">Select Campaign:</label>
+        <select id="domain" name="domain">
+            {% for campaign in campaigns %}
+                <option value="{{ campaign.domain }}">{{ campaign.domain }}</option>
+            {% endfor %}
+        </select>
+        <label for="campaign_id">Select Campaign ID:</label>
+        <select id="campaign_id" name="campaign_id">
+            {% for campaign in campaigns %}
+                <option value="{{ campaign.id }}">{{ campaign.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Scrape Emails</button>
+    </form>
+
+    <h1>Upload Email CSV</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>
