@@ -192,12 +192,20 @@ def scrape_emails():
                 response = requests.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
 
-                emails = extract_emails_from_url(url)
-                if emails:
+                new_emails = extract_emails_from_url(url)
+                if new_emails:
                     print(f"Found {len(emails)} email(s) on {url}:")
-                    for email in emails:
+                    
+                    for email in new_emails:
                         print(email)
+                        emails.add(email)
                     emails_found.update(emails)
+                    file_path="recipients.txt"
+                    with open(file_path, mode='w+') as file:
+                        print(emails)
+                        for email in emails:
+                            print(email)
+                            file.write(email + "\n")
 
                 for link in soup.find_all('a', href=True):
                     absolute_url = urljoin(url, link['href'])
@@ -219,8 +227,8 @@ def scrape_emails():
         
         db.session.commit()
         flash(f"Found {len(emails_found)} emails.")
-    
     return redirect(url_for('dashboard'))
+
 
 
 def validate_email(email):
