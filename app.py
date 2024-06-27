@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import smtplib
 import dns.resolver
 from werkzeug.utils import secure_filename
+import pandas as pd
 
 # Load environment variables from .env file
 load_dotenv()
@@ -88,10 +89,7 @@ def dashboard():
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
-            new_emails = parse_csv(filepath)
-            for email in new_emails:
-                if email not in emails:
-                    emails.append(email)
+            emails = parse_csv(filepath)
             for email in emails:
                 new_campaign = Campaign(email=email, user_id=session['user_id'])
                 db.session.add(new_campaign)
@@ -132,6 +130,7 @@ def upload_csv():
                 email = row[0]
                 if not Email.query.filter_by(address=email, campaign_id=campaign_id).first():
                     new_email = Email(address=email, is_alive=validate_email(email), campaign_id=campaign_id)
+                    print(new_email)
                     db.session.add(new_email)
             db.session.commit()
     return redirect(url_for('dashboard'))
@@ -257,14 +256,10 @@ def validate_email(email):
         return False
         
 def parse_csv(filepath):
-    emails = set()
-    with open(filepath, 'r') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            for email in row:
-                if validate_email(email):
-                    emails.add(email)
-    return emails
+    df=pd.read_csv("D:\hacktivate\hacktivate\recipients.csv")
+    for index, row in df.iterrows():
+        emails.append(row["Email"])
+
 
 # Ensure the application context is available for certain operations
 with app.app_context():

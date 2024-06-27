@@ -24,11 +24,21 @@
         <button type="submit">Scrape Emails</button>
     </form>
 
+    {% if emails %}
+    <h2>Unique Emails from Uploaded CSV</h2>
+    <ul>
+        {% for email in emails %}
+        <li>{{ email }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
     <h1>Upload Email CSV</h1>
     <form method="post" enctype="multipart/form-data">
         <input type="file" name="file" required>
         <button type="submit">Upload</button>
     </form>
-    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    
 </body>
 </html>
