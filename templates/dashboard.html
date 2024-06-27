@@ -24,14 +24,13 @@
         <button type="submit">Scrape Emails</button>
     </form>
 
-    {% if emails %}
-    <h2>Unique Emails from Uploaded CSV</h2>
+    
+    <h2>Unique Emails</h2>
     <ul>
         {% for email in emails %}
         <li>{{ email }}</li>
         {% endfor %}
     </ul>
-    {% endif %}
 
 
     <h1>Upload Email CSV</h1>

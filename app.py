@@ -168,7 +168,7 @@ def scrape_emails():
         
         visited_urls = set()
         emails_found = set()
-
+        max_pages_to_visit = 20
         def extract_emails_from_url(url):
             response = requests.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -182,9 +182,9 @@ def scrape_emails():
 
             return emails
 
-        def crawl_and_find_emails(url):
-            if url in visited_urls:
-                return
+        def crawl_and_find_emails(url,page_visited=0):
+            if url in visited_urls or page_visited>=max_pages_to_visit:
+                return page_visited
             visited_urls.add(url)
             print(f"Visiting: {url}")
 
@@ -202,7 +202,10 @@ def scrape_emails():
                 for link in soup.find_all('a', href=True):
                     absolute_url = urljoin(url, link['href'])
                     if base_url in absolute_url and absolute_url not in visited_urls:
-                        crawl_and_find_emails(absolute_url)
+                        page_visited=crawl_and_find_emails(absolute_url,page_visited+1)
+                        if page_visited>=max_pages_to_visit:
+                            break
+
 
             except Exception as e:
                 print(f"Error crawling {url}: {str(e)}")
